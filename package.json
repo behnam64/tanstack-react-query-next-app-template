@@ -9,16 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.55.0",
+    "@tanstack/react-query-devtools": "^5.55.0",
+    "axios": "^1.7.7",
+    "http-status-codes": "^2.3.0",
+    "next": "14.2.8",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.8"
+    "use-immer": "^0.10.0",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.8"
+    "eslint-config-next": "14.2.8",
+    "typedoc": "^0.26.8",
+    "typescript": "^5"
   }
 }
