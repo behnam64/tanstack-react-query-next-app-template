@@ -13,9 +13,6 @@
 /.next/
 /out/
 
-# typedoc
-/docs
-
 # production
 /build
 
