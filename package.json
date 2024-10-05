@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "build-doc": "typedoc",
-    "doc": "live-server docs"
+    "doc": "live-server docs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.55.0",
@@ -30,6 +31,7 @@
     "eslint-config-next": "14.2.8",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
+    "husky": "^9.1.6",
     "live-server": "^1.2.2",
     "typedoc": "^0.26.8",
     "typescript": "^5"

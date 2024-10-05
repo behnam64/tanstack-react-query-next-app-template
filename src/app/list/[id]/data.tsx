@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { useGetDataQuery } from '@/api/data';
 
