@@ -9,6 +9,7 @@ import {
   UseMutationResult,
   useQueries,
   queryOptions,
+  keepPreviousData,
 } from '@tanstack/react-query';
 import axios, {
   AxiosRequestConfig,
@@ -30,6 +31,7 @@ export const baseUrl = '';
 export interface ApiConfig {
   method: Method;
   url: string;
+  key: string;
 }
 
 export interface ProgressInterface {
@@ -41,15 +43,16 @@ export interface QueryRequestExtraConfig {
   progressData?: boolean;
   cancelable?: boolean;
   store?: boolean;
+  paginated?: boolean;
 }
 export interface MutationRequestExtraConfig {
   progressData?: boolean;
   cancelable?: boolean;
 }
 
-export type AxiosRequestConfigModified<D = any> = Omit<
+export type AxiosRequestConfigModified<D = unknown> = Omit<
   AxiosRequestConfig<D>,
-  'method' | 'url' | 'params' | 'onDownloadProgress' | 'onUploadProgress'
+  'method' | 'url' | 'params' | 'onDownloadProgress' | 'onUploadProgress' | 'cancelToken'
 >;
 
 export type UndefinedInitialDataOptionsModified<T = any, E = any> = Omit<
@@ -160,7 +163,7 @@ export function queryOptionsConstructor<T = any, D = any, E = any>(
     ...queryoptions,
   });
 
-  return { options };
+  return options;
 }
 
 export function useQueriesConstructor(
@@ -186,7 +189,7 @@ export function useQueriesConstructor(
     setCancel(queries.map(() => axios.CancelToken.source()));
     setProgress(queries.map(() => ({ upload: undefined, download: undefined })));
     setInitialData(queries.map(() => undefined));
-  }, [queries.length]);
+  }, [queries.length, queries]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -204,7 +207,7 @@ export function useQueriesConstructor(
         }
       });
     }
-  }, []);
+  }, [queries]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const queryFn = () => {
     return queries.map((query, i) => {
@@ -252,28 +255,23 @@ export function useQueriesConstructor(
       return {
         queryKey,
         queryFn: queryFn()[i],
+        initialData: initialData[i],
         ...queryoptions,
       };
     }),
   });
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      queries.map((q, i) => {
-        const { queryKey } = q;
-        const { store } = q.extraconfig!;
-        if (store) {
-          if (query[i].data) {
-            setInitialData((initialData) => {
-              initialData[i] = query[i].data;
-            });
-            localStorage.setItem(StorageConst + queryKey.join('-'), JSON.stringify(query[i].data));
-            return;
-          }
+  if (typeof window !== 'undefined') {
+    queries.map((q, i) => {
+      const { queryKey } = q;
+      const { store } = q.extraconfig!;
+      if (store) {
+        if (query[i].data) {
+          localStorage.setItem(StorageConst + queryKey.join('-'), JSON.stringify(query[i].data));
         }
-      });
-    }
-  }, [query]);
+      }
+    });
+  }
 
   return queries.map((q, i) => {
     const { progressData, cancelable } = q.extraconfig!;
@@ -294,7 +292,7 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData: true; cancelable: true; store?: boolean },
+  extraconfig?: { progressData: true; cancelable: true; store?: boolean; paginated?: boolean },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ): UseQueryResult<ResType<T>, ErrType<E>> & { progress: ProgressInterface; cancel: Canceler };
@@ -303,7 +301,7 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData: true; cancelable?: false; store?: boolean },
+  extraconfig?: { progressData: true; cancelable?: false; store?: boolean; paginated?: boolean },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ): UseQueryResult<ResType<T>, ErrType<E>> & { progress: ProgressInterface };
@@ -312,7 +310,7 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData?: false; cancelable: true; store?: boolean },
+  extraconfig?: { progressData?: false; cancelable: true; store?: boolean; paginated?: boolean },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ): UseQueryResult<ResType<T>, ErrType<E>> & { cancel: Canceler };
@@ -321,7 +319,7 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData: false; cancelable: false; store?: boolean },
+  extraconfig?: { progressData: false; cancelable: false; store?: boolean; paginated?: boolean },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ): UseQueryResult<ResType<T>, ErrType<E>>;
@@ -334,7 +332,7 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ) {
-  const { progressData, cancelable, store } = extraconfig!;
+  const { progressData, cancelable, store, paginated } = extraconfig!;
 
   const [{ cancel, token }, setCancel] = useImmer(axios.CancelToken.source());
 
@@ -353,7 +351,7 @@ export function useQueryConstructor<T = any, D = any, E = any>(
       }
     }
     setInitialData(undefined);
-  }, []);
+  }, [queryKey, store]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const queryFn = (): Promise<ResType<T>> => {
     return new Promise<ResType<T>>((resolve, reject) => {
@@ -390,21 +388,17 @@ export function useQueryConstructor<T = any, D = any, E = any>(
     queryKey,
     queryFn,
     initialData,
+    placeholderData: paginated ? keepPreviousData : undefined,
     ...queryoptions,
   });
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (store) {
-        if (query.data) {
-          setInitialData(query.data);
-          localStorage.setItem(StorageConst + queryKey.join('-'), JSON.stringify(query.data));
-          return;
-        }
+  if (typeof window !== 'undefined') {
+    if (store) {
+      if (query.data) {
+        localStorage.setItem(StorageConst + queryKey.join('-'), JSON.stringify(query.data));
       }
     }
-    setInitialData(undefined);
-  }, [query.data]);
+  }
 
   if (progressData && cancelable) {
     return { ...query, progress, cancel };
