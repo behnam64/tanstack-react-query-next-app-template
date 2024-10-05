@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build-doc": "typedoc",
+    "doc": "live-server docs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.55.0",
@@ -26,7 +28,9 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.8",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
+    "live-server": "^1.2.2",
     "typedoc": "^0.26.8",
     "typescript": "^5"
   }

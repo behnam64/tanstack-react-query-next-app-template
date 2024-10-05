@@ -1,0 +1,5 @@
+{
+  "entryPoints": ["src/api/api.ts", "src/api/data.ts"],
+  "out": "docs",
+  "exclude": ["(.spec|.e2e).ts", "(.spec|.e2e).tsx"]
+}

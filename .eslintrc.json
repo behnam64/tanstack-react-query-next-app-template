@@ -2,6 +2,7 @@
   "extends": [
     "next/core-web-vitals",
     "next/typescript",
+    "prettier",
     "plugin:import/recommended",
     "plugin:@tanstack/query/recommended"
   ],
