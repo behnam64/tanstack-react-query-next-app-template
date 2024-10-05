@@ -25,13 +25,27 @@ import { useImmer } from 'use-immer';
 
 const StorageConst = 'query-storage-';
 
+export const baseUrl = '';
+
+export interface ApiConfig {
+  method: Method;
+  url: string;
+}
+
 export interface ProgressInterface {
   upload?: AxiosProgressEvent;
   download?: AxiosProgressEvent;
 }
 
-export type QueryRequestExtraConfig = { progressData?: boolean; cancelable?: boolean; store?: boolean };
-export type MutationRequestExtraConfig = { progressData?: boolean; cancelable?: boolean };
+export interface QueryRequestExtraConfig {
+  progressData?: boolean;
+  cancelable?: boolean;
+  store?: boolean;
+}
+export interface MutationRequestExtraConfig {
+  progressData?: boolean;
+  cancelable?: boolean;
+}
 
 export type AxiosRequestConfigModified<D = any> = Omit<
   AxiosRequestConfig<D>,
@@ -264,11 +278,11 @@ export function useQueriesConstructor(
   return queries.map((q, i) => {
     const { progressData, cancelable } = q.extraconfig!;
     if (progressData && cancelable) {
-      return { ...query[i], progress, cancel };
+      return { ...query[i], progress: progress[i], cancel: cancel[i] };
     } else if (progressData && !cancelable) {
-      return { ...query[i], progress };
+      return { ...query[i], progress: progress[i] };
     } else if (!progressData && cancelable) {
-      return { ...query[i], cancel };
+      return { ...query[i], cancel: cancel[i] };
     } else {
       return query[i];
     }
