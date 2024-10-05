@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md,mdx,css,yaml,yml}\"",
+    "check": "prettier --check \"**/*.{ts,tsx,js,jsx,md,mdx,css,yaml,yml}\"",
     "build-doc": "typedoc",
     "doc": "live-server docs",
     "prepare": "husky"
@@ -33,6 +35,7 @@
     "eslint-plugin-import": "^2.31.0",
     "husky": "^9.1.6",
     "live-server": "^1.2.2",
+    "prettier": "^3.3.3",
     "typedoc": "^0.26.8",
     "typescript": "^5"
   }

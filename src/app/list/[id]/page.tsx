@@ -1,7 +1,11 @@
 'use server';
 
 import { getDataOptions } from '@/api/data';
-import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
 import Data from './data';
 
 export async function generateStaticParams() {

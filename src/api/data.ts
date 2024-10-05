@@ -31,7 +31,10 @@ export function getDataQueryKey(id?: string): QueryKey {
 export function getDataOptions(
   params?: { id?: string },
   axiosconfig?: AxiosRequestConfigModified<undefined>,
-  queryoptions?: UndefinedInitialDataOptionsModified<GetDataResType, GetDataErrType>
+  queryoptions?: UndefinedInitialDataOptionsModified<
+    GetDataResType,
+    GetDataErrType
+  >
 ) {
   return queryOptionsConstructor(
     getDataConfig.method,
@@ -47,7 +50,10 @@ export function useGetDataQuery(
   params?: { id?: string },
   extraconfig?: QueryRequestExtraConfig,
   axiosconfig?: AxiosRequestConfigModified<undefined>,
-  queryoptions?: UndefinedInitialDataOptionsModified<GetDataResType, GetDataErrType>
+  queryoptions?: UndefinedInitialDataOptionsModified<
+    GetDataResType,
+    GetDataErrType
+  >
 ) {
   return useQueryConstructor(
     getDataConfig.method,

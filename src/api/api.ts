@@ -52,7 +52,12 @@ export interface MutationRequestExtraConfig {
 
 export type AxiosRequestConfigModified<D = unknown> = Omit<
   AxiosRequestConfig<D>,
-  'method' | 'url' | 'params' | 'onDownloadProgress' | 'onUploadProgress' | 'cancelToken'
+  | 'method'
+  | 'url'
+  | 'params'
+  | 'onDownloadProgress'
+  | 'onUploadProgress'
+  | 'cancelToken'
 >;
 
 export type UndefinedInitialDataOptionsModified<T = any, E = any> = Omit<
@@ -60,17 +65,21 @@ export type UndefinedInitialDataOptionsModified<T = any, E = any> = Omit<
   'queryKey' | 'queryFn'
 >;
 
-export type UseMutationOptionsModified<T = any, E = any, V = void, C = unknown> = Omit<
+export type UseMutationOptionsModified<
+  T = any,
+  E = any,
+  V = void,
+  C = unknown,
+> = Omit<
   UseMutationOptions<ResType<T>, ErrType<E>, V, C>,
   'queryKey' | 'queryFn'
 >;
 
-export type DefinedInitialDataOptionsModified<T = any, D = any, E = any> = DefinedInitialDataOptions<
-  ResType<T>,
-  ErrType<E>,
-  D,
-  QueryKey
->;
+export type DefinedInitialDataOptionsModified<
+  T = any,
+  D = any,
+  E = any,
+> = DefinedInitialDataOptions<ResType<T>, ErrType<E>, D, QueryKey>;
 
 export interface ResType<T = any> {
   data: T;
@@ -177,17 +186,23 @@ export function useQueriesConstructor(
     queryoptions?: UndefinedInitialDataOptionsModified;
   }[]
 ): UseQueryResult<ResType, ErrType>[] {
-  const [cancel, setCancel] = useImmer<CancelTokenSource[]>(queries.map(() => axios.CancelToken.source()));
+  const [cancel, setCancel] = useImmer<CancelTokenSource[]>(
+    queries.map(() => axios.CancelToken.source())
+  );
 
   const [progress, setProgress] = useImmer<ProgressInterface[]>(
     queries.map(() => ({ upload: undefined, download: undefined }))
   );
 
-  const [initialData, setInitialData] = useImmer<(ResType | undefined)[]>(queries.map(() => undefined));
+  const [initialData, setInitialData] = useImmer<(ResType | undefined)[]>(
+    queries.map(() => undefined)
+  );
 
   useEffect(() => {
     setCancel(queries.map(() => axios.CancelToken.source()));
-    setProgress(queries.map(() => ({ upload: undefined, download: undefined })));
+    setProgress(
+      queries.map(() => ({ upload: undefined, download: undefined }))
+    );
     setInitialData(queries.map(() => undefined));
   }, [queries.length, queries]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -267,7 +282,10 @@ export function useQueriesConstructor(
       const { store } = q.extraconfig!;
       if (store) {
         if (query[i].data) {
-          localStorage.setItem(StorageConst + queryKey.join('-'), JSON.stringify(query[i].data));
+          localStorage.setItem(
+            StorageConst + queryKey.join('-'),
+            JSON.stringify(query[i].data)
+          );
         }
       }
     });
@@ -292,16 +310,29 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData: true; cancelable: true; store?: boolean; paginated?: boolean },
+  extraconfig?: {
+    progressData: true;
+    cancelable: true;
+    store?: boolean;
+    paginated?: boolean;
+  },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
-): UseQueryResult<ResType<T>, ErrType<E>> & { progress: ProgressInterface; cancel: Canceler };
+): UseQueryResult<ResType<T>, ErrType<E>> & {
+  progress: ProgressInterface;
+  cancel: Canceler;
+};
 export function useQueryConstructor<T = any, D = any, E = any>(
   method: Method,
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData: true; cancelable?: false; store?: boolean; paginated?: boolean },
+  extraconfig?: {
+    progressData: true;
+    cancelable?: false;
+    store?: boolean;
+    paginated?: boolean;
+  },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ): UseQueryResult<ResType<T>, ErrType<E>> & { progress: ProgressInterface };
@@ -310,7 +341,12 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData?: false; cancelable: true; store?: boolean; paginated?: boolean },
+  extraconfig?: {
+    progressData?: false;
+    cancelable: true;
+    store?: boolean;
+    paginated?: boolean;
+  },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ): UseQueryResult<ResType<T>, ErrType<E>> & { cancel: Canceler };
@@ -319,7 +355,12 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   url: string,
   queryKey: QueryKey,
   params?: any,
-  extraconfig?: { progressData: false; cancelable: false; store?: boolean; paginated?: boolean },
+  extraconfig?: {
+    progressData: false;
+    cancelable: false;
+    store?: boolean;
+    paginated?: boolean;
+  },
   axiosconfig?: AxiosRequestConfigModified<D>,
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>
 ): UseQueryResult<ResType<T>, ErrType<E>>;
@@ -336,9 +377,14 @@ export function useQueryConstructor<T = any, D = any, E = any>(
 
   const [{ cancel, token }, setCancel] = useImmer(axios.CancelToken.source());
 
-  const [progress, setProgress] = useImmer<ProgressInterface>({ upload: undefined, download: undefined });
+  const [progress, setProgress] = useImmer<ProgressInterface>({
+    upload: undefined,
+    download: undefined,
+  });
 
-  const [initialData, setInitialData] = useImmer<ResType<T> | undefined>(undefined);
+  const [initialData, setInitialData] = useImmer<ResType<T> | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -395,7 +441,10 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   if (typeof window !== 'undefined') {
     if (store) {
       if (query.data) {
-        localStorage.setItem(StorageConst + queryKey.join('-'), JSON.stringify(query.data));
+        localStorage.setItem(
+          StorageConst + queryKey.join('-'),
+          JSON.stringify(query.data)
+        );
       }
     }
   }
@@ -411,23 +460,46 @@ export function useQueryConstructor<T = any, D = any, E = any>(
   }
 }
 
-export function useMutationConstructor<T = any, D = any, E = any, V = void, C = unknown>(
+export function useMutationConstructor<
+  T = any,
+  D = any,
+  E = any,
+  V = void,
+  C = unknown,
+>(
   method: Method,
   url: string,
   params?: any,
   extraconfig?: { progressData: true; cancelable: true },
   axiosconfig?: AxiosRequestConfigModified<D>,
   mutationoptions?: UseMutationOptionsModified<T, E, V, C>
-): UseMutationResult<ResType<T>, ErrType<E>, V, C> & { progress: ProgressInterface; cancel: Canceler };
-export function useMutationConstructor<T = any, D = any, E = any, V = void, C = unknown>(
+): UseMutationResult<ResType<T>, ErrType<E>, V, C> & {
+  progress: ProgressInterface;
+  cancel: Canceler;
+};
+export function useMutationConstructor<
+  T = any,
+  D = any,
+  E = any,
+  V = void,
+  C = unknown,
+>(
   method: Method,
   url: string,
   params?: any,
   extraconfig?: { progressData: true; cancelable?: false },
   axiosconfig?: AxiosRequestConfigModified<D>,
   mutationoptions?: UseMutationOptionsModified<T, E, V, C>
-): UseMutationResult<ResType<T>, ErrType<E>, V, C> & { progress: ProgressInterface };
-export function useMutationConstructor<T = any, D = any, E = any, V = void, C = unknown>(
+): UseMutationResult<ResType<T>, ErrType<E>, V, C> & {
+  progress: ProgressInterface;
+};
+export function useMutationConstructor<
+  T = any,
+  D = any,
+  E = any,
+  V = void,
+  C = unknown,
+>(
   method: Method,
   url: string,
   params?: any,
@@ -435,7 +507,13 @@ export function useMutationConstructor<T = any, D = any, E = any, V = void, C = 
   axiosconfig?: AxiosRequestConfigModified<D>,
   mutationoptions?: UseMutationOptionsModified<T, E, V, C>
 ): UseMutationResult<ResType<T>, ErrType<E>, V, C> & { cancel: Canceler };
-export function useMutationConstructor<T = any, D = any, E = any, V = void, C = unknown>(
+export function useMutationConstructor<
+  T = any,
+  D = any,
+  E = any,
+  V = void,
+  C = unknown,
+>(
   method: Method,
   url: string,
   params?: any,
@@ -443,7 +521,13 @@ export function useMutationConstructor<T = any, D = any, E = any, V = void, C = 
   axiosconfig?: AxiosRequestConfigModified<D>,
   mutationoptions?: UseMutationOptionsModified<T, E, V, C>
 ): UseMutationResult<ResType<T>, ErrType<E>, V, C>;
-export function useMutationConstructor<T = any, D = any, E = any, V = void, C = unknown>(
+export function useMutationConstructor<
+  T = any,
+  D = any,
+  E = any,
+  V = void,
+  C = unknown,
+>(
   method: Method,
   url: string,
   params?: any,
@@ -455,7 +539,10 @@ export function useMutationConstructor<T = any, D = any, E = any, V = void, C = 
 
   const [{ cancel, token }, setCancel] = useImmer(axios.CancelToken.source());
 
-  const [progress, setProgress] = useImmer<ProgressInterface>({ upload: undefined, download: undefined });
+  const [progress, setProgress] = useImmer<ProgressInterface>({
+    upload: undefined,
+    download: undefined,
+  });
 
   const mutationFn = (): Promise<ResType<T>> => {
     return new Promise<ResType<T>>((resolve, reject) => {
