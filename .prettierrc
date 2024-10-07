@@ -1,4 +1,5 @@
 {
+  "plugins": [],
   "arrowParens": "always",
   "bracketSameLine": false,
   "bracketSpacing": true,
