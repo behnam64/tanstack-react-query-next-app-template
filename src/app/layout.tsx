@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import ReactQueryProvider from './reqctQueryProvider';
+import ReactQueryProvider from './reactQueryProvider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const metadata: Metadata = {
@@ -16,6 +16,15 @@ export default function RootLayout({
     <html lang='en'>
       <body>
         <ReactQueryProvider>
+          <div
+            style={{
+              fontSize: '1.3rem',
+              marginBottom: '1rem',
+              marginTop: '1rem',
+            }}
+          >
+            todos:
+          </div>
           {children}
           <ReactQueryDevtools
             initialIsOpen={false}
