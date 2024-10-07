@@ -3,8 +3,14 @@ import {
   QueryKey,
   UndefinedInitialDataOptions,
   UseMutationOptions,
+  UseQueryResult,
 } from '@tanstack/react-query';
-import { AxiosProgressEvent, AxiosRequestConfig, Method } from 'axios';
+import {
+  AxiosProgressEvent,
+  AxiosRequestConfig,
+  Canceler,
+  Method,
+} from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 export const StorageConst = 'query-storage-';
@@ -79,3 +85,11 @@ export interface ErrType<E = any> {
   status?: StatusCodes;
   statusText: ReasonPhrases | 'Network error';
 }
+
+export type UseQueryResultModified<T, E> = UseQueryResult<
+  ResType<T>,
+  ErrType<E>
+> & {
+  progress?: ProgressInterface;
+  cancel?: Canceler;
+};

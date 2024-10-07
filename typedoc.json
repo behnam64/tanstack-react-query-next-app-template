@@ -1,7 +1,6 @@
 {
   "entryPoints": [
-    "src/api/api.ts",
-    "src/api/data.ts"
+    "src/libs/api/*",
   ],
   "out": "docs",
   "exclude": [

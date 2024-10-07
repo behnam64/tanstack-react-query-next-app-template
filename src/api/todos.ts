@@ -1,5 +1,5 @@
-import { apiBuilder } from './api';
-import { baseUrl } from './types';
+import apiBuilder from '@libs/api';
+import { baseUrl } from '../libs/api/types';
 
 export type TodoType = {
   userId: number;

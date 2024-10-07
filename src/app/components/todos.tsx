@@ -1,5 +1,5 @@
 'use client';
-import { useGetTodosQuery } from '@/api/todos';
+import { useGetTodosQuery } from '@api/todos';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Loading from './loading';
 import React from 'react';
