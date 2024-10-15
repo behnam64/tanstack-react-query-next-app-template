@@ -1,22 +1,21 @@
 'use client';
 
+import { apiConfig } from '@/config/api';
 import {
   keepPreviousData,
   QueryKey,
   useQuery,
   UseQueryResult,
 } from '@tanstack/react-query';
-import axios, { AxiosProgressEvent, Canceler, Method } from 'axios';
+import axios, { Method } from 'axios';
 import { useEffect } from 'react';
 import { useImmer } from 'use-immer';
 import { parseError, parseResponse } from './parseResponseError';
 import {
   AxiosRequestConfigModified,
   ErrType,
-  ProgressInterface,
   QueryRequestExtraConfig,
   ResType,
-  StorageConst,
   UndefinedInitialDataOptionsModified,
 } from './types';
 
@@ -36,18 +35,8 @@ export function useQueryConstructor<T = any, D = any, E = any>({
   extraconfig?: QueryRequestExtraConfig;
   axiosconfig?: AxiosRequestConfigModified<D>;
   queryoptions?: UndefinedInitialDataOptionsModified<T, E>;
-}): UseQueryResult<ResType<T>, ErrType<E>> & {
-  progress?: ProgressInterface;
-  cancel?: Canceler;
-} {
-  const { progressData, cancelable, store, paginated } = extraconfig || {};
-
-  const [{ cancel, token }, setCancel] = useImmer(axios.CancelToken.source());
-
-  const [progress, setProgress] = useImmer<ProgressInterface>({
-    upload: undefined,
-    download: undefined,
-  });
+}): UseQueryResult<ResType<T>, ErrType<E>> {
+  const { store, paginated } = extraconfig || {};
 
   const [initialData, setInitialData] = useImmer<ResType<T> | undefined>(
     undefined
@@ -56,7 +45,9 @@ export function useQueryConstructor<T = any, D = any, E = any>({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (store) {
-        const text = localStorage.getItem(StorageConst + queryKey.join('-'));
+        const text = localStorage.getItem(
+          apiConfig.queryStorageName + queryKey.join('-')
+        );
         if (text) {
           setInitialData(JSON.parse(text));
           return;
@@ -73,26 +64,13 @@ export function useQueryConstructor<T = any, D = any, E = any>({
           method,
           url,
           params,
-          onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
-            setProgress((progress) => {
-              progress.download = progressEvent;
-            });
-          },
-          onUploadProgress: (progressEvent: AxiosProgressEvent) => {
-            setProgress((progress) => {
-              progress.upload = progressEvent;
-            });
-          },
-          cancelToken: cancelable ? token : undefined,
           ...axiosconfig,
         })
         .then((response) => {
-          setCancel(axios.CancelToken.source());
-          resolve(parseResponse<T>(response));
+          parseResponse<T>(resolve, response);
         })
         .catch((error) => {
-          setCancel(axios.CancelToken.source());
-          reject(parseError<E>(error));
+          return parseError<E>(reject, error);
         });
     });
   };
@@ -109,20 +87,12 @@ export function useQueryConstructor<T = any, D = any, E = any>({
     if (store) {
       if (query.data) {
         localStorage.setItem(
-          StorageConst + queryKey.join('-'),
+          apiConfig.queryStorageName + queryKey.join('-'),
           JSON.stringify(query.data)
         );
       }
     }
   }
 
-  if (progressData && cancelable) {
-    return { ...query, progress, cancel };
-  } else if (progressData && !cancelable) {
-    return { ...query, progress };
-  } else if (!progressData && cancelable) {
-    return { ...query, cancel };
-  } else {
-    return query;
-  }
+  return query;
 }

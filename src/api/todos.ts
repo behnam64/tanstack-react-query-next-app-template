@@ -1,5 +1,5 @@
+import { apiConfig } from '@/config/api';
 import apiBuilder from '@libs/api';
-import { baseUrl } from '../libs/api/types';
 
 export type TodoType = {
   userId: number;
@@ -9,7 +9,7 @@ export type TodoType = {
 };
 
 export type GetTodosResType = TodoType[];
-export type GetTodosRouteParamsType = { page: string };
+export type GetTodosQueryParamsType = { page: string; limit: string };
 
 export type GetTodosErrType = any;
 
@@ -19,18 +19,18 @@ export const {
   options: getTodosQueryOptions,
   useQuery: useGetTodosQuery,
 } = apiBuilder<
-  GetTodosRouteParamsType,
   undefined,
+  GetTodosQueryParamsType,
   GetTodosResType,
   undefined,
   GetTodosErrType
 >({
   method: 'get',
   url() {
-    return `${baseUrl}/todos`;
+    return `${apiConfig.baseUrl}/todos`;
   },
   key: 'get-todos',
-  queryKey(routeParams?: GetTodosRouteParamsType) {
-    return ['get-todos', routeParams?.page];
+  queryKey({ queryParams }) {
+    return ['get-todos', queryParams?.page];
   },
 });

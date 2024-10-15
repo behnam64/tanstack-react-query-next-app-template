@@ -27,7 +27,7 @@ export default function apiBuilder<
   }) {
     return apiConstructor<T, D, E>({
       method,
-      url: url(routeParams, queryParams),
+      url: url({ routeParams, queryParams }),
       params: queryParams,
       axiosconfig,
     });
@@ -45,8 +45,8 @@ export default function apiBuilder<
   }) {
     return queryOptionsConstructor<T, D, E>({
       method,
-      url: url(routeParams, queryParams),
-      queryKey: queryKey(routeParams, queryParams),
+      url: url({ routeParams, queryParams }),
+      queryKey: queryKey({ routeParams, queryParams }),
       params: queryParams,
       axiosconfig,
       queryoptions,
@@ -67,8 +67,8 @@ export default function apiBuilder<
   }) {
     return useQueryConstructor<T, D, E>({
       method,
-      url: url(routeParams, queryParams),
-      queryKey: queryKey(routeParams, queryParams),
+      url: url({ routeParams, queryParams }),
+      queryKey: queryKey({ routeParams, queryParams }),
       params: queryParams,
       extraconfig,
       axiosconfig,

@@ -32,10 +32,10 @@ export function queryOptionsConstructor<T = any, D = any, E = any>({
           ...axiosconfig,
         })
         .then((response) => {
-          resolve(parseResponse<T>(response));
+          parseResponse<T>(resolve, response);
         })
         .catch((error) => {
-          reject(parseError<E>(error));
+          return parseError<E>(reject, error);
         });
     });
   };

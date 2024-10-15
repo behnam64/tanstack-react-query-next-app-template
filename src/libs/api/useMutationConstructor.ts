@@ -61,11 +61,11 @@ export function useMutationConstructor<
         })
         .then((response) => {
           setCancel(axios.CancelToken.source());
-          resolve(parseResponse<T>(response));
+          parseResponse<T>(resolve, response);
         })
         .catch((error) => {
           setCancel(axios.CancelToken.source());
-          reject(parseError<E>(error));
+          return parseError<E>(reject, error);
         });
     });
   };

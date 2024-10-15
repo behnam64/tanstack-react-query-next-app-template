@@ -12,9 +12,9 @@ function makeQueryClient(staleTime: number) {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        // With SSR, we usually want to set some default staleTime
-        // above 0 to avoid refetching immediately on the client
         staleTime: staleTime,
+        refetchOnReconnect: false,
+        refetchOnWindowFocus: false,
       },
     },
   });
@@ -25,6 +25,8 @@ let browserQueryClient: QueryClient | undefined = undefined;
 function getQueryClient() {
   if (isServer) {
     // Server: always make a new query client
+    // With SSR, we usually want to set some default staleTime
+    // above 0 to avoid refetching immediately on the client
     return makeQueryClient(60 * 1000);
   } else {
     // Browser: make a new query client if we don't already have one

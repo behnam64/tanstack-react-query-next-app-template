@@ -13,18 +13,19 @@ import {
 } from 'axios';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
-export const StorageConst = 'query-storage-';
-
-export const baseUrl = 'https://jsonplaceholder.typicode.com';
-
 export interface ApiConfig<
   R extends { [key: string]: string } | undefined,
   Q extends { [key: string]: string } | undefined,
 > {
   method: Method;
-  url: (routeParams?: R, queryParams?: Q) => string;
+  url: (route: { routeParams?: R; queryParams?: Q }) => string;
   key: string;
-  queryKey: (routeParams?: R, queryParams?: Q) => QueryKey;
+  queryKey: (route: { routeParams?: R; queryParams?: Q }) => QueryKey;
+}
+
+export interface RefreshDataInterface {
+  type: 'data' | 'query' | 'header';
+  field: string;
 }
 
 export interface ProgressInterface {
@@ -33,8 +34,6 @@ export interface ProgressInterface {
 }
 
 export interface QueryRequestExtraConfig {
-  progressData?: boolean;
-  cancelable?: boolean;
   store?: boolean;
   paginated?: boolean;
 }
