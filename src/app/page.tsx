@@ -1,8 +1,7 @@
 'use server';
-
+import Link from 'next/link';
 import React from 'react';
-import Todos from './components/todos';
 
-export default async function Home() {
-  return <Todos />;
+export default async function Page() {
+  return <Link href={'/todos/1'}>Todos Page</Link>;
 }

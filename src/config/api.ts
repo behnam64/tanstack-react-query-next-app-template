@@ -16,7 +16,7 @@ export const apiConfig: ApiConfigInterface = {
   queryStorageName: 'query-storage-',
 
   // baseurl for api requests
-  baseUrl: 'http://localhost:3100',
+  baseUrl: 'https://jsonplaceholder.typicode.com',
 
   token: {
     // this is the tokenCookie name if this isn't empty axios will sent the cookie as authorization header

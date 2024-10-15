@@ -14,17 +14,14 @@ export default function apiBuilder<
   T = any,
   D = any,
   E = any,
->(config: ApiConfig<R, Q>) {
-  const { method, url, queryKey } = config;
-  function api({
-    routeParams,
-    queryParams,
-    axiosconfig,
-  }: {
+>(config?: ApiConfig<R, Q>) {
+  const { method, url, queryKey } = config! || {};
+  function api(config?: {
     routeParams?: R;
     queryParams?: Q;
     axiosconfig?: AxiosRequestConfigModified<D>;
   }) {
+    const { routeParams, queryParams, axiosconfig } = config!;
     return apiConstructor<T, D, E>({
       method,
       url: url({ routeParams, queryParams }),
@@ -32,17 +29,14 @@ export default function apiBuilder<
       axiosconfig,
     });
   }
-  function options({
-    routeParams,
-    queryParams,
-    axiosconfig,
-    queryoptions,
-  }: {
+  function options(config?: {
     routeParams?: R;
     queryParams?: Q;
     axiosconfig?: AxiosRequestConfigModified<D>;
     queryoptions?: UndefinedInitialDataOptionsModified<T, E>;
   }) {
+    const { routeParams, queryParams, axiosconfig, queryoptions } =
+      config! || {};
     return queryOptionsConstructor<T, D, E>({
       method,
       url: url({ routeParams, queryParams }),
@@ -52,19 +46,15 @@ export default function apiBuilder<
       queryoptions,
     });
   }
-  function useQuery({
-    routeParams,
-    queryParams,
-    extraconfig,
-    axiosconfig,
-    queryoptions,
-  }: {
+  function useQuery(config?: {
     routeParams?: R;
     queryParams?: Q;
     extraconfig?: QueryRequestExtraConfig;
     axiosconfig?: AxiosRequestConfigModified<D>;
     queryoptions?: UndefinedInitialDataOptionsModified<T, E>;
   }) {
+    const { routeParams, queryParams, extraconfig, axiosconfig, queryoptions } =
+      config! || {};
     return useQueryConstructor<T, D, E>({
       method,
       url: url({ routeParams, queryParams }),

@@ -1,14 +1,14 @@
 'use client';
 import { useGetTodosQuery } from '@api/todos';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Loading from './loading';
 import React from 'react';
 
 export default function Todos() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const params = useParams<{ page: string }>();
   const arr = [];
-  const page = (searchParams.get('page') as string) || '1';
+  const page = params.page || '1';
   if (page === '1') {
     arr.push(0, 1, 2, 3, 4);
   } else if (page === '2') {
@@ -62,9 +62,9 @@ export default function Todos() {
             </p>
           </div>
         ))}
-        <button onClick={() => router.push('/?page=1')}>1</button>
-        <button onClick={() => router.push('/?page=2')}>2</button>
-        <button onClick={() => router.push('/?page=3')}>3</button>
+        <button onClick={() => router.push('1')}>1</button>
+        <button onClick={() => router.push('2')}>2</button>
+        <button onClick={() => router.push('3')}>3</button>
       </>
     );
   }

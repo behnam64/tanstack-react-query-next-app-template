@@ -16,15 +16,6 @@ export default function RootLayout({
     <html lang='en'>
       <body>
         <ReactQueryProvider>
-          <div
-            style={{
-              fontSize: '1.3rem',
-              marginBottom: '1rem',
-              marginTop: '1rem',
-            }}
-          >
-            todos:
-          </div>
           {children}
           <ReactQueryDevtools
             initialIsOpen={false}
