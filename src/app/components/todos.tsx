@@ -18,8 +18,7 @@ export default function Todos() {
   }
 
   const todos = useGetTodosQuery({
-    routeParams: { page },
-    extraconfig: { progressData: true },
+    queryParams: { page, limit: '20' },
   });
 
   if (todos.isPending) {
